@@ -1,0 +1,56 @@
+<script>
+    (function ($) {
+
+        var count = {{ count }} ;
+        var currentIndex = 0;
+        var failCount = 0;
+        var links = [
+            {% for url in urls %}
+            "{{ url | raw}}",
+            {% endfor %}
+        ];
+
+        window.nextRequest = function (index) {
+            if (index === (count)) {
+                $('#optimize-submit').prop('disabled', false);
+                return;
+            }
+
+            currentIndex = index;
+            updateUI();
+            $.ajax({
+                url: links[index],
+                success: function (data) {
+                    nextRequest(index + 1);
+                    updateUI();
+                },
+                error: function () {
+                    failCount++;
+                    updateUI();
+                }
+            });
+        };
+
+
+        function updateUI() {
+            var progress = (currentIndex + 1) + "/" + count;
+            $('#optimize-results').html('<p>Process: ' + progress + '</p><p>Failed: ' + failCount + '</p>');
+        }
+
+    })(jQuery);
+</script>
+<div class="wrap">
+    <h1>Image Optimization</h1>
+
+    <div id="optimize-results">
+        <p>There are <b>{{ count }}</b> images that can be optimized.</p>
+    </div>
+</div>
+
+
+{% if count>0 %}
+    <button type="submit" id="optimize-submit" class="button button-primary"
+            onclick="nextRequest(0); jQuery(this).prop('disabled',true);">
+        {{ submit_label }}
+    </button>
+{% endif %}

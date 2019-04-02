@@ -57,4 +57,12 @@ class Brizy_Config {
 			array( 'http://www.brizy.org' )
 		);
 	}
+
+
+	static public function getOptimizerConfig( $className ) {
+		switch ( $className ) {
+			case 'Brizy_Editor_Asset_Optimize_ShortpixelOptimizer':
+				return array('API_KEY'=>'uunlmNjZZBtKLfCSg4OK');
+		}
+	}
 }
